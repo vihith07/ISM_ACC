@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Main Page</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Beginner:wght@600&display=swap" rel="stylesheet">
+            
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+        
+        <style>
+            body{
+                background-color: rgb(179, 179, 179);
+                margin: 0px;
+                padding: 0px;
+                font-family: 'Montserrat', sans-serif;
+            }
+            .top_head{
+                width: 100%;
+                height: 8vh;
+                background-color: rgb(43, 172, 0);
+                color:white;
+                font-size: x-large;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: 'Montserrat', sans-serif;
+            }
+            .main_cointatiner{
+                width: 70%;
+                height: auto;
+                margin-left: auto;
+                margin-right: auto;
+                background-color: rgb(152, 152, 152);
+                margin-top: 5px;
+                margin-bottom: 5px;
+                padding: 5px;
+                border-radius: 5px;
+            }
+            .inner_cointatiner{
+                width: 60%;
+                padding: 20px;
+                margin-left: auto;
+                margin-right: auto;
+                min-height: 100px;
+                max-height: 100px;
+                overflow-y: auto;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div id="user_n" style="display:none;"><%- usn %></div>
+        <div class="top_head">Database Access Control</div>
+        <div class="main_cointatiner">
+            <div>
+                <div style="text-align: center;font-size: larger;font-weight: 600;">IP Addresses</div>
+                <div class="inner_cointatiner">
+                    
+                    <% for (let i =0; i<ipdets.length;  i++ ) { %>
+                        <div style="margin:5px;display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: larger;"><%= ipdets[i].ip %></div>
+                            <div><button onclick="handleDeleteIP('<%= ipdets[i].ip %>')" style="border-radius: 5px;font-weight: 600;font-size:large;border-style: none;padding: 10px;background-color: rgb(12, 87, 173);color: white;">Del</button></div>
+                        </div>
+                    <% } %>
+                </div>
+                <div style="text-align: center;"><button style="border-radius: 5px;font-weight: 600;font-size:large;border-style: none;padding: 10px;background-color: rgb(12, 87, 173);color: white;" onClick="handelipadd()">ADD</button></div>
+            </div>
+
+            <br><br><br>
+
+            <div>
+                <div style="text-align: center;font-size: larger;font-weight: 600;">Postal Code</div>
+                <div class="inner_cointatiner">
+                    
+                    <% for (let i =0; i<postdets.length;  i++ ) { %>
+                        <div style="margin:5px;display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: larger;"><%= postdets[i].postcode %></div>
+                            <div><button onclick="handleDeletePost('<%= postdets[i].postcode %>')" style="border-radius: 5px;font-weight: 600;font-size:large;border-style: none;padding: 10px;background-color: rgb(12, 87, 173);color: white;">Del</button></div>
+                        </div>
+                    <% } %>
+                </div>
+                <div style="text-align: center;"><button style="border-radius: 5px;font-weight: 600;font-size:large;border-style: none;padding: 10px;background-color: rgb(12, 87, 173);color: white;" onClick="handelpostadd()">ADD</button></div>
+            </div>
+            <br><br><br>
+
+            <div>
+                <div style="text-align: center;font-size: larger;font-weight: 600;">Latitude Longitude</div>
+                <div class="inner_cointatiner">
+                    
+                    <% for (let i =0; i<latdets.length;  i++ ) { %>
+                        <div style="margin:5px;display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: larger;"><%= latdets[i].latlong %></div>
+                            <div><button onclick="handleDeleteLat('<%= latdets[i].latlong %>')" style="border-radius: 5px;font-weight: 600;font-size:large;border-style: none;padding: 10px;background-color: rgb(12, 87, 173);color: white;">Del</button></div>
+                        </div>
+                    <% } %>
+                </div>
+                <div style="text-align: center;"><button style="border-radius: 5px;font-weight: 600;font-size:large;border-style: none;padding: 10px;background-color: rgb(12, 87, 173);color: white;" onClick="handellatadd()">ADD</button></div>
+            </div>
+            
+        </div>
+        <script>
+            function handleDeleteIP(e){
+                let usn=document.getElementById("user_n").innerHTML;
+                console.log(usn+" "+e);
+    
+                    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:8000/admin/deleteip");
+    xhr.onload = function() {
+        let resp=xhr.response;
+        window.location="http://localhost:8000/admin/logged/"+usn;
+    };
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send("user="+usn+"&ip="+e); 
+            }
+
+            function handelipadd(){
+                let usn=document.getElementById("user_n").innerHTML;
+                let ans=window.prompt("enter ip address to add");
+                if(ans!=""){
+                    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:8000/admin/addip");
+    xhr.onload = function() {
+        let resp=xhr.response;
+        console.log(resp);
+        window.location="http://localhost:8000/admin/logged/"+usn;
+    };
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send("user="+usn+"&ip="+ans); 
+                }
+            }
+
+
+            function handleDeletePost(e){
+                let usn=document.getElementById("user_n").innerHTML;
+                console.log(usn+" "+e);
+    
+                    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:8000/admin/deletepost");
+    xhr.onload = function() {
+        let resp=xhr.response;
+        window.location="http://localhost:8000/admin/logged/"+usn;
+    };
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send("user="+usn+"&post="+e); 
+            }
+
+            function handelpostadd(){
+                let usn=document.getElementById("user_n").innerHTML;
+                let ans=window.prompt("enter postal code address to add");
+                if(ans!=""){
+                    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:8000/admin/addpost");
+    xhr.onload = function() {
+        let resp=xhr.response;
+        console.log(resp);
+        window.location="http://localhost:8000/admin/logged/"+usn;
+    };
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send("user="+usn+"&post="+ans); 
+                }
+            }
+
+
+
+            function handleDeleteLat(e){
+                let usn=document.getElementById("user_n").innerHTML;
+                let arr=e.split(" ");
+    
+                    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:8000/admin/deletelat");
+    xhr.onload = function() {
+        let resp=xhr.response;
+        window.location="http://localhost:8000/admin/logged/"+usn;
+    };
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send("user="+usn+"&lat="+arr[0]+"&long="+arr[1]); 
+            }
+
+            function handellatadd(){
+                let usn=document.getElementById("user_n").innerHTML;
+                let ans=window.prompt("enter Latitude to add");
+                let ans1=window.prompt("enter Longitude to add");
+                if(ans!=""){
+                    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:8000/admin/addlat");
+    xhr.onload = function() {
+        let resp=xhr.response;
+        console.log(resp);
+        window.location="http://localhost:8000/admin/logged/"+usn;
+    };
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send("user="+usn+"&lat="+ans+"&long="+ans1); 
+                }
+            }
+
+
+
+
+
+        </script>
+    </body>
+</html>
